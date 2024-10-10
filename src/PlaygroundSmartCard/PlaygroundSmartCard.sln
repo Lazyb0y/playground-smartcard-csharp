@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaygroundSmartCard.UI", "PlaygroundSmartCard.UI\PlaygroundSmartCard.UI.csproj", "{B84803EB-1F36-4CB7-8E70-28C32E53433E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCard.Core", "SmartCard.Core\SmartCard.Core.csproj", "{906F2C6D-D354-4683-9A0F-D6DBACAC3604}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B84803EB-1F36-4CB7-8E70-28C32E53433E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B84803EB-1F36-4CB7-8E70-28C32E53433E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B84803EB-1F36-4CB7-8E70-28C32E53433E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{906F2C6D-D354-4683-9A0F-D6DBACAC3604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{906F2C6D-D354-4683-9A0F-D6DBACAC3604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{906F2C6D-D354-4683-9A0F-D6DBACAC3604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{906F2C6D-D354-4683-9A0F-D6DBACAC3604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
