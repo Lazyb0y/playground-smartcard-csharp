@@ -26,6 +26,16 @@ namespace SmartCard.Core
         /// </summary>
         /// <param name="code">The error code.</param>
         /// <returns>A new instance of <see cref="SmartCardResult"/> with Success set to false, ErrorCode set to the specified code, and ErrorMessage set to the corresponding error message.</returns>
+        public static SmartCardResult CreateErrorResult(int code)
+        {
+            return CreateErrorResult((uint)code);
+        }
+
+        /// <summary>
+        /// Creates an error result for the <see cref="SmartCardResult"/> class with the specified error code.
+        /// </summary>
+        /// <param name="code">The error code.</param>
+        /// <returns>A new instance of <see cref="SmartCardResult"/> with Success set to false, ErrorCode set to the specified code, and ErrorMessage set to the corresponding error message.</returns>
         public static SmartCardResult CreateErrorResult(uint code)
         {
             string errorCode;
@@ -326,6 +336,23 @@ namespace SmartCard.Core
                 ErrorCode = null,
                 ErrorMessage = null,
                 Data = data
+            };
+        }
+
+        /// <summary>
+        /// Creates an error result for the <see cref="SmartCardResult{T}"/> class with the specified error code.
+        /// </summary>
+        /// <param name="code">The error code.</param>
+        /// <returns>A new instance of <see cref="SmartCardResult{T}"/> with Success set to false, ErrorCode set to the specified code, ErrorMessage set to the corresponding error message, and Data set to the default value of type T.</returns>
+        public static SmartCardResult<T> CreateErrorResult(int code)
+        {
+            var errorResult = SmartCardResultHelper.CreateErrorResult(code);
+            return new SmartCardResult<T>
+            {
+                Success = false,
+                ErrorCode = errorResult.ErrorCode,
+                ErrorMessage = errorResult.ErrorMessage,
+                Data = default
             };
         }
 
