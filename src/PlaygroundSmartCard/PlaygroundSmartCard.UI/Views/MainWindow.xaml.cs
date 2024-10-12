@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace PlaygroundSmartCard.UI
+namespace PlaygroundSmartCard.UI.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
