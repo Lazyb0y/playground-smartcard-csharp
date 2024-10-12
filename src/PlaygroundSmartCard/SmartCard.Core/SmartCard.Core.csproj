@@ -45,6 +45,7 @@
     <Compile Include="Internal\WinSCardError.cs" />
     <Compile Include="Internal\WinSCardScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmartCardContext.cs" />
     <Compile Include="SmartCardResult.cs" />
     <Compile Include="SmartCardResultHelper.cs" />
     <Compile Include="SmartCardScope.cs" />
