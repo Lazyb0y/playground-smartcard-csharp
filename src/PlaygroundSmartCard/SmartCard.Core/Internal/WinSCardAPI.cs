@@ -10,6 +10,22 @@ namespace SmartCard.Core.Internal
     internal class WinSCardAPI
     {
         /// <summary>
+        /// Retrieves the current status of the specified smart card readers.
+        /// </summary>
+        /// <param name="hContext">A handle to the established resource manager context.</param>
+        /// <param name="dwTimeout">The maximum amount of time, in milliseconds, to wait for an action.</param>
+        /// <param name="rgReaderStates">An array of <see cref="WinSCardReaderState"/> structures that specify the readers to watch, and that receives the current status of each reader.</param>
+        /// <param name="cReaders">The number of elements in the rgReaderStates array.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardGetStatusChange(
+            IntPtr hContext,
+            uint dwTimeout,
+            [In, Out] WinSCardReaderState[] rgReaderStates,
+            uint cReaders
+        );
+
+        /// <summary>
         /// Establishes a connection to the smart card resource manager.
         /// </summary>
         /// <param name="dwScope">The scope of the resource manager context.</param>
