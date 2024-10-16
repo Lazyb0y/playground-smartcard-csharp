@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using SmartCard.Core;
 
 namespace PlaygroundSmartCard.UI.Views
 {
@@ -10,6 +12,13 @@ namespace PlaygroundSmartCard.UI.Views
         public MainWindow()
         {
             InitializeComponent();
+
+            Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            SmartCardMonitor.Instance.StopAllMonitoring();
         }
     }
 }

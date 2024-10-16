@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using PlaygroundSmartCard.UI.MVVM;
 using SmartCard.Core;
+using SmartCard.Core.EventArgs;
 
 namespace PlaygroundSmartCard.UI.ViewModels
 {
@@ -11,6 +13,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         #region Decleration(s)
 
         private readonly SmartCardReader _cardReader;
+        private string _currentReader;
         private string _selectedReader;
 
         #endregion
@@ -18,6 +21,12 @@ namespace PlaygroundSmartCard.UI.ViewModels
         #region Property(s)
 
         public ObservableCollection<string> ReaderList { get; set; }
+
+        public string CurrentReader
+        {
+            get => _currentReader;
+            set => SetProperty(ref _currentReader, value);
+        }
 
         public string SelectedReader
         {
@@ -30,6 +39,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         #region Command(s)
 
         public ICommand RefreshReaderListCommand { get; }
+        public ICommand SelectReaderCommand { get; }
 
         #endregion
 
@@ -41,8 +51,24 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
             ReaderList = new ObservableCollection<string>();
 
-            RefreshReaderListCommand =
-                new RelayCommand(ExecuteRefreshReaderListCommand, CanExecuteRefreshReaderListCommand);
+            SmartCardMonitor.Instance.CardStatusChanged += SmartCardMonitor_CardStatusChanged;
+
+            RefreshReaderListCommand = new RelayCommand(ExecuteRefreshReaderListCommand, _ => true);
+            SelectReaderCommand = new RelayCommand(ExecuteSelectReaderCommand, _ => true);
+        }
+
+        ~MainViewModel()
+        {
+            SmartCardMonitor.Instance.CardStatusChanged -= SmartCardMonitor_CardStatusChanged;
+        }
+
+        #endregion
+
+        #region SmartCardMonitor
+
+        private void SmartCardMonitor_CardStatusChanged(object sender, CardStatusChangedEventArgs e)
+        {
+            Console.WriteLine($@"Reader: {e.ReaderName}, Card Status: {e.Status}");
         }
 
         #endregion
@@ -55,6 +81,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             if (!result.Success)
             {
                 MessageBox.Show($"Unable to get the connected reader list. [{result.ErrorCode}] {result.ErrorMessage}");
+                return;
             }
 
             ReaderList.Clear();
@@ -73,9 +100,24 @@ namespace PlaygroundSmartCard.UI.ViewModels
             SelectedReader = ReaderList[0];
         }
 
-        private bool CanExecuteRefreshReaderListCommand(object parameter)
+        private void ExecuteSelectReaderCommand(object parameter)
         {
-            return true;
+            if (_currentReader == null)
+            {
+                if (string.IsNullOrEmpty(_selectedReader))
+                {
+                    MessageBox.Show("Select a reader from the combo box first.");
+                    return;
+                }
+
+                CurrentReader = _selectedReader;
+                SmartCardMonitor.Instance.StartMonitoring(_currentReader);
+            }
+            else
+            {
+                SmartCardMonitor.Instance.StopMonitoring(_currentReader);
+                CurrentReader = null;
+            }
         }
 
         #endregion

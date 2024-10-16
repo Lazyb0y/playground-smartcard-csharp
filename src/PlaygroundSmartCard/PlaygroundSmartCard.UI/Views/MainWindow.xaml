@@ -7,7 +7,7 @@
         xmlns:viewModels="clr-namespace:PlaygroundSmartCard.UI.ViewModels"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="Smart Card Playground" Height="400" Width="550">
+        Title="Smart Card Playground" Height="400" Width="600">
 
     <Window.DataContext>
         <viewModels:MainViewModel />
@@ -21,8 +21,13 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal">
                 <Label Content="Select card reader:" Margin="8,0" />
-                <ComboBox Margin="8,0" ItemsSource="{Binding ReaderList}" SelectedItem="{Binding SelectedReader}" Width="300" />
-                <Button Content="Refresh" Padding="8,0" Command="{Binding RefreshReaderListCommand}" />
+                <ComboBox Margin="8,0" ItemsSource="{Binding ReaderList}" SelectedItem="{Binding SelectedReader}"
+                          IsEnabled="{Binding CurrentReader, Converter={StaticResource InverseStringToBoolConverter}}"
+                          Width="290" />
+                <Button Content="S / D" Padding="8,0" Command="{Binding SelectReaderCommand}" />
+                <Button Content="Refresh" Padding="8,0" Command="{Binding RefreshReaderListCommand}"
+                        IsEnabled="{Binding CurrentReader, Converter={StaticResource InverseStringToBoolConverter}}"
+                        Margin="8,0, 0, 0" />
             </StackPanel>
 
             <Grid Row="1">
