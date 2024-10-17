@@ -55,7 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\InverseNullToBoolConverter.cs" />
     <Compile Include="Converters\InverseStringToBoolConverter.cs" />
+    <Compile Include="Converters\NullToBoolConverter.cs" />
     <Compile Include="Converters\StringToBoolConverter.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

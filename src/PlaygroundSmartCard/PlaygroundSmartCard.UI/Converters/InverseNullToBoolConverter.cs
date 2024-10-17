@@ -5,26 +5,21 @@ using System.Windows.Data;
 namespace PlaygroundSmartCard.UI.Converters
 {
     /// <summary>
-    /// Converts a string value to its inverse boolean representation.
+    /// Converts a value to its inverse boolean representation based on nullity.
     /// </summary>
-    public class InverseStringToBoolConverter : IValueConverter
+    public class InverseNullToBoolConverter : IValueConverter
     {
         /// <summary>
-        /// Converts a string value to its inverse boolean representation.
+        /// Converts a value to its inverse boolean representation based on nullity.
         /// </summary>
-        /// <param name="value">The string value to convert.</param>
+        /// <param name="value">The value to be converted.</param>
         /// <param name="targetType">The type of the binding target property.</param>
         /// <param name="parameter">The converter parameter.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>True if the string value is null or empty, false otherwise.</returns>
+        /// <param name="culture">The culture to be used in the conversion.</param>
+        /// <returns>True if the value is not null; otherwise, false.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || value is string stringValue && string.IsNullOrEmpty(stringValue))
-            {
-                return true;
-            }
-
-            return false;
+            return value != null;
         }
 
         /// <summary>
