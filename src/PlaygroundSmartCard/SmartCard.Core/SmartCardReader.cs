@@ -14,7 +14,7 @@ namespace SmartCard.Core
     /// </remarks>
     public class SmartCardReader : IDisposable
     {
-        #region Declearation(s)
+        #region Declaration(s)
 
         private bool _disposed;
         private readonly SmartCardContext _context;
