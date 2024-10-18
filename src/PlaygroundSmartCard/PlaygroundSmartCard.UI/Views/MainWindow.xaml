@@ -52,11 +52,10 @@
         <GroupBox Grid.Row="1" Header="Smart Card">
             <StackPanel Style="{StaticResource GroupContentStyle}" Orientation="Horizontal" HorizontalAlignment="Right"
                         IsEnabled="{Binding CurrentReader, Converter={StaticResource StringToBoolConverter}}">
+                <TextBlock Text="{Binding CardType}" HorizontalAlignment="Left" Margin="8, 0" />
                 <Button Content="Connect" Command="{Binding ConnectCommand}"
-                        IsEnabled="{Binding CurrentReader, Converter={StaticResource StringToBoolConverter}}" />
+                        IsEnabled="{Binding SmartCard, Converter={StaticResource NullToBoolConverter}}" />
                 <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Margin="4, 0"
-                        IsEnabled="{Binding SmartCard, Converter={StaticResource InverseNullToBoolConverter}}" />
-                <Button Content="Get Type" Command="{Binding GetCardTypeCommand}"
                         IsEnabled="{Binding SmartCard, Converter={StaticResource InverseNullToBoolConverter}}" />
             </StackPanel>
         </GroupBox>

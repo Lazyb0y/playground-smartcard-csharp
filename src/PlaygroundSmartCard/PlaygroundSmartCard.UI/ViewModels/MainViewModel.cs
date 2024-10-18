@@ -16,6 +16,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         private string _selectedReader;
         private SmartCard.Core.SmartCard _smartCard;
         private bool _isCardInserted;
+        private string _cardType;
 
         #endregion
 
@@ -55,6 +56,12 @@ namespace PlaygroundSmartCard.UI.ViewModels
             set => SetProperty(ref _isCardInserted, value);
         }
 
+        public string CardType
+        {
+            get => _cardType;
+            set => SetProperty(ref _cardType, value);
+        }
+
         #endregion
 
         #region Command(s)
@@ -90,6 +97,30 @@ namespace PlaygroundSmartCard.UI.ViewModels
         ~MainViewModel()
         {
             SmartCardMonitor.Instance.CardStatusChanged -= SmartCardMonitor_CardStatusChanged;
+        }
+
+        #endregion
+
+        #region Method(s)
+
+        private void GetCardInfo()
+        {
+            try
+            {
+                var result = _smartCard.GetATRString();
+                if (!result.Success)
+                {
+                    MessageBox.Show($"Unable to get the card info: [{result.ErrorCode}] {result.ErrorMessage}");
+                    return;
+                }
+
+                var atr = new ATR(result.Data);
+                CardType = atr.GetCardType().ToString();
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show($"Unable to get the card info: {x.Message}");
+            }
         }
 
         #endregion
@@ -190,6 +221,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
                 }
 
                 SmartCard = card;
+                GetCardInfo();
             }
             catch (Exception x)
             {
@@ -215,6 +247,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
                 }
 
                 SmartCard = null;
+                CardType = null;
             }
             catch (Exception x)
             {
