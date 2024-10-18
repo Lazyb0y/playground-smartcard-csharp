@@ -10,19 +10,35 @@ namespace SmartCard.Core.Internal
     internal class WinSCardAPI
     {
         /// <summary>
-        /// Retrieves the current status of the specified smart card readers.
+        /// Establishes a connection to a smart card in a reader.
         /// </summary>
         /// <param name="hContext">A handle to the established resource manager context.</param>
-        /// <param name="dwTimeout">The maximum amount of time, in milliseconds, to wait for an action.</param>
-        /// <param name="rgReaderStates">An array of <see cref="WinSCardReaderState"/> structures that specify the readers to watch, and that receives the current status of each reader.</param>
-        /// <param name="cReaders">The number of elements in the rgReaderStates array.</param>
+        /// <param name="szReader">The name of the reader that contains the target card.</param>
+        /// <param name="dwShareMode">The type of connection that you want to establish to the reader.</param>
+        /// <param name="dwPreferredProtocols">The protocol(s) to use for communication with the card.</param>
+        /// <param name="phCard">A handle that identifies the connection to the card.</param>
+        /// <param name="pdwActiveProtocol">The actual protocol that is being used for communication with the card.</param>
         /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
         [DllImport("winscard.dll", SetLastError = true)]
-        internal static extern int SCardGetStatusChange(
+        internal static extern int SCardConnect(
             IntPtr hContext,
-            uint dwTimeout,
-            [In, Out] WinSCardReaderState[] rgReaderStates,
-            uint cReaders
+            string szReader,
+            uint dwShareMode,
+            uint dwPreferredProtocols,
+            ref IntPtr phCard,
+            ref int pdwActiveProtocol
+        );
+
+        /// <summary>
+        /// Disconnects a connection from a smart card in a reader.
+        /// </summary>
+        /// <param name="hCard">A handle to the established connection to the card.</param>
+        /// <param name="dwDisposition">Action to take on the card in the connected reader on close.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardDisconnect(
+            IntPtr hCard,
+            uint dwDisposition
         );
 
         /// <summary>
@@ -39,6 +55,22 @@ namespace SmartCard.Core.Internal
             IntPtr pvReserved1,
             IntPtr pvReserved2,
             ref IntPtr phContext
+        );
+
+        /// <summary>
+        /// Retrieves the current status of the specified smart card readers.
+        /// </summary>
+        /// <param name="hContext">A handle to the established resource manager context.</param>
+        /// <param name="dwTimeout">The maximum amount of time, in milliseconds, to wait for an action.</param>
+        /// <param name="rgReaderStates">An array of <see cref="WinSCardReaderState"/> structures that specify the readers to watch, and that receives the current status of each reader.</param>
+        /// <param name="cReaders">The number of elements in the rgReaderStates array.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardGetStatusChange(
+            IntPtr hContext,
+            uint dwTimeout,
+            [In, Out] WinSCardReaderState[] rgReaderStates,
+            uint cReaders
         );
 
         /// <summary>
@@ -65,6 +97,28 @@ namespace SmartCard.Core.Internal
         [DllImport("winscard.dll", SetLastError = true)]
         internal static extern int SCardReleaseContext(
             IntPtr hContext
+        );
+
+        /// <summary>
+        /// Retrieves the current status of a smart card.
+        /// </summary>
+        /// <param name="hCard">A handle to the established connection to the card.</param>
+        /// <param name="mszReaderNames">A buffer that receives the names of the readers that contain the card.</param>
+        /// <param name="pcchReaderLen">The length of the mszReaderNames buffer in characters.</param>
+        /// <param name="pdwState">A buffer that receives the current state of the card.</param>
+        /// <param name="pdwProtocol">A buffer that receives the current protocol, if any, being used for communication with the card.</param>
+        /// <param name="pbAtr">A buffer that receives the ATR string of the card.</param>
+        /// <param name="pcbAtrLen">The length of the pbAtr buffer in bytes.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardStatus(
+            IntPtr hCard,
+            byte[] mszReaderNames,
+            ref int pcchReaderLen,
+            ref int pdwState,
+            ref int pdwProtocol,
+            byte[] pbAtr,
+            ref int pcbAtrLen
         );
     }
 }
