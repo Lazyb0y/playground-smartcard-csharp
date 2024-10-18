@@ -62,12 +62,12 @@ namespace SmartCard.Core
             var result = WinSCardAPI.SCardListReaders(_context.Context, null, IntPtr.Zero, ref pcchReaders);
             if (result != WinSCardError.SCARD_S_SUCCESS)
             {
-                return SmartCardResultHelper<List<string>>.CreateErrorResult(result);
+                return SmartCardResult<List<string>>.CreateFailure(result);
             }
 
             if (pcchReaders == 0)
             {
-                return SmartCardResultHelper<List<string>>.CreateSuccessResult(new List<string>());
+                return SmartCardResult<List<string>>.CreateSuccess(new List<string>());
             }
 
             var readerNames = Marshal.AllocHGlobal((int)pcchReaders);
@@ -78,7 +78,7 @@ namespace SmartCard.Core
                 result = WinSCardAPI.SCardListReaders(_context.Context, null, readerNames, ref pcchReaders);
                 if (result != WinSCardError.SCARD_S_SUCCESS)
                 {
-                    return SmartCardResultHelper<List<string>>.CreateErrorResult(result);
+                    return SmartCardResult<List<string>>.CreateFailure(result);
                 }
 
                 var readerList = new List<string>();
@@ -99,7 +99,7 @@ namespace SmartCard.Core
                     offset += readerName.Length + 1;
                 }
 
-                return SmartCardResultHelper<List<string>>.CreateSuccessResult(readerList);
+                return SmartCardResult<List<string>>.CreateSuccess(readerList);
             }
             finally
             {

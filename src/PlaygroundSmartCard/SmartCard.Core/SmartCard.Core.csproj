@@ -58,7 +58,6 @@
     <Compile Include="SmartCardMonitor.cs" />
     <Compile Include="SmartCardReader.cs" />
     <Compile Include="SmartCardResult.cs" />
-    <Compile Include="SmartCardResultHelper.cs" />
     <Compile Include="SmartCardScope.cs" />
     <Compile Include="SmartCardStatus.cs" />
     <Compile Include="SmartCardType.cs" />

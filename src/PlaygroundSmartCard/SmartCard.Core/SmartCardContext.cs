@@ -65,12 +65,12 @@ namespace SmartCard.Core
             var result = WinSCardAPI.SCardEstablishContext(scope, IntPtr.Zero, IntPtr.Zero, ref hContext);
             if (result != WinSCardError.SCARD_S_SUCCESS)
             {
-                return SmartCardResultHelper.CreateErrorResult(result);
+                return SmartCardResult.CreateFailure(result);
             }
 
             Context = hContext;
 
-            return SmartCardResultHelper.CreateSuccessResult();
+            return SmartCardResult.CreateSuccess();
         }
 
         /// <summary>
@@ -84,13 +84,13 @@ namespace SmartCard.Core
                 var result = WinSCardAPI.SCardReleaseContext(Context);
                 if (result != WinSCardError.SCARD_S_SUCCESS)
                 {
-                    return SmartCardResultHelper.CreateErrorResult(result);
+                    return SmartCardResult.CreateFailure(result);
                 }
 
                 Context = IntPtr.Zero;
             }
 
-            return SmartCardResultHelper.CreateSuccessResult();
+            return SmartCardResult.CreateSuccess();
         }
 
         #endregion
