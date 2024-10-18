@@ -12,7 +12,6 @@ namespace SmartCard.Core.Internal
         /// <summary>
         /// The name of the smart card reader.
         /// </summary>
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string ReaderName;
 
         /// <summary>
