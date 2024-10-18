@@ -15,6 +15,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         private string _currentReader;
         private string _selectedReader;
         private SmartCard.Core.SmartCard _smartCard;
+        private bool _isCardInserted;
 
         #endregion
 
@@ -46,6 +47,12 @@ namespace PlaygroundSmartCard.UI.ViewModels
         {
             get => _smartCard;
             set => SetProperty(ref _smartCard, value);
+        }
+
+        public bool IsCardInserted
+        {
+            get => _isCardInserted;
+            set => SetProperty(ref _isCardInserted, value);
         }
 
         #endregion
@@ -92,6 +99,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         private void SmartCardMonitor_CardStatusChanged(object sender, CardStatusChangedEventArgs e)
         {
             Console.WriteLine($@"Reader: {e.ReaderName}, Card Status: {e.Status}");
+            IsCardInserted = e.Status == SmartCardStatus.Inserted;
         }
 
         #endregion

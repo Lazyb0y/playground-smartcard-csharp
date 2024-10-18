@@ -6,7 +6,7 @@
         xmlns:viewModels="clr-namespace:PlaygroundSmartCard.UI.ViewModels"
         mc:Ignorable="d"
         ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
-        Title="Smart Card Playground" Height="200" Width="600">
+        Title="Smart Card Playground" Height="300" Width="600">
 
     <Window.Resources>
         <Style TargetType="Button">
@@ -27,6 +27,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -58,5 +60,12 @@
                         IsEnabled="{Binding SmartCard, Converter={StaticResource InverseNullToBoolConverter}}" />
             </StackPanel>
         </GroupBox>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="3" Margin="16, 8" Height="20">
+            <Separator VerticalAlignment="Top" />
+            <TextBlock Text="Card inserted in the reader" Foreground="Gray"
+                       Visibility="{Binding IsCardInserted, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </StackPanel>
     </Grid>
 </Window>

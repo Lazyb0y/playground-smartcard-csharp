@@ -6,6 +6,8 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
             <converters:InverseNullToBoolConverter x:Key="InverseNullToBoolConverter" />
             <converters:InverseStringToBoolConverter x:Key="InverseStringToBoolConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
