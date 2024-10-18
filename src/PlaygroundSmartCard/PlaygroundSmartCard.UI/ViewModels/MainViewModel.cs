@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 using PlaygroundSmartCard.UI.MVVM;
 using SmartCard.Core;
 using SmartCard.Core.EventArgs;
@@ -15,6 +14,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         private readonly SmartCardReader _cardReader;
         private string _currentReader;
         private string _selectedReader;
+        private SmartCard.Core.SmartCard _smartCard;
 
         #endregion
 
@@ -22,24 +22,42 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
         public ObservableCollection<string> ReaderList { get; set; }
 
-        public string CurrentReader
-        {
-            get => _currentReader;
-            set => SetProperty(ref _currentReader, value);
-        }
-
         public string SelectedReader
         {
             get => _selectedReader;
-            set => SetProperty(ref _selectedReader, value);
+            set
+            {
+                SetProperty(ref _selectedReader, value);
+                SelectReaderCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string CurrentReader
+        {
+            get => _currentReader;
+            set
+            {
+                SetProperty(ref _currentReader, value);
+                SelectReaderCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public SmartCard.Core.SmartCard SmartCard
+        {
+            get => _smartCard;
+            set => SetProperty(ref _smartCard, value);
         }
 
         #endregion
 
         #region Command(s)
 
-        public ICommand RefreshReaderListCommand { get; }
-        public ICommand SelectReaderCommand { get; }
+        public RelayCommand GetReadersCommand { get; }
+        public RelayCommand SelectReaderCommand { get; }
+        public RelayCommand DeselectReaderCommand { get; }
+        public RelayCommand ConnectCommand { get; }
+        public RelayCommand DisconnectCommand { get; }
+        public RelayCommand GetCardTypeCommand { get; }
 
         #endregion
 
@@ -53,8 +71,13 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
             SmartCardMonitor.Instance.CardStatusChanged += SmartCardMonitor_CardStatusChanged;
 
-            RefreshReaderListCommand = new RelayCommand(ExecuteRefreshReaderListCommand, _ => true);
-            SelectReaderCommand = new RelayCommand(ExecuteSelectReaderCommand, _ => true);
+            GetReadersCommand = new RelayCommand(ExecuteGetReadersCommand, _ => true);
+            SelectReaderCommand = new RelayCommand(ExecuteSelectReaderCommand,
+                _ => !string.IsNullOrEmpty(_selectedReader) && string.IsNullOrEmpty(_currentReader));
+            DeselectReaderCommand = new RelayCommand(ExecuteDeselectReaderCommand, _ => true);
+            ConnectCommand = new RelayCommand(ExecuteConnectCommand, _ => true);
+            DisconnectCommand = new RelayCommand(ExecuteDisconnectCommand, _ => true);
+            GetCardTypeCommand = new RelayCommand(ExecuteGetCardTypeCommand, _ => true);
         }
 
         ~MainViewModel()
@@ -75,7 +98,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
         #region Command Action(s)
 
-        private void ExecuteRefreshReaderListCommand(object parameter)
+        private void ExecuteGetReadersCommand(object parameter)
         {
             var result = _cardReader.GetReaderNames();
             if (!result.Success)
@@ -85,6 +108,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             }
 
             ReaderList.Clear();
+            SelectedReader = null;
 
             if (result.Data.Count == 0)
             {
@@ -102,21 +126,117 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
         private void ExecuteSelectReaderCommand(object parameter)
         {
-            if (_currentReader == null)
+            if (!string.IsNullOrEmpty(_currentReader))
             {
-                if (string.IsNullOrEmpty(_selectedReader))
+                MessageBox.Show("A reader is already selected.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_selectedReader))
+            {
+                MessageBox.Show("Select a reader from the combo box first.");
+                return;
+            }
+
+            var success = SmartCardMonitor.Instance.StartMonitoring(_selectedReader);
+            if (!success)
+            {
+                MessageBox.Show("Unable to start the reader monitor service.");
+                return;
+            }
+
+            CurrentReader = _selectedReader;
+        }
+
+        private void ExecuteDeselectReaderCommand(object parameter)
+        {
+            if (string.IsNullOrEmpty(_currentReader))
+            {
+                return;
+            }
+
+            SmartCardMonitor.Instance.StopMonitoring(_currentReader);
+            CurrentReader = null;
+        }
+
+        private void ExecuteConnectCommand(object parameter)
+        {
+            if (_smartCard != null)
+            {
+                MessageBox.Show("Please disconnect the previous card first!");
+                return;
+            }
+
+            try
+            {
+                var card = new SmartCard.Core.SmartCard(SmartCardScope.User)
                 {
-                    MessageBox.Show("Select a reader from the combo box first.");
+                    ReaderName = _currentReader
+                };
+
+                var result = card.Connect();
+                if (!result.Success)
+                {
+                    MessageBox.Show($"Unable to connect to the card. [{result.ErrorCode}] {result.ErrorMessage}");
                     return;
                 }
 
-                CurrentReader = _selectedReader;
-                SmartCardMonitor.Instance.StartMonitoring(_currentReader);
+                SmartCard = card;
             }
-            else
+            catch (Exception x)
             {
-                SmartCardMonitor.Instance.StopMonitoring(_currentReader);
-                CurrentReader = null;
+                MessageBox.Show($"Unable to connect to the card: {x.Message}");
+            }
+        }
+
+        private void ExecuteDisconnectCommand(object parameter)
+        {
+            if (_smartCard == null)
+            {
+                MessageBox.Show("No smart card is connected");
+                return;
+            }
+
+            try
+            {
+                var result = _smartCard.Disconnect();
+                if (!result.Success)
+                {
+                    MessageBox.Show($"Unable to disconnect to the card. [{result.ErrorCode}] {result.ErrorMessage}");
+                    return;
+                }
+
+                SmartCard = null;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show($"Unable to disconnect to the card: {x.Message}");
+            }
+        }
+
+        private void ExecuteGetCardTypeCommand(object parameter)
+        {
+            if (_smartCard == null)
+            {
+                MessageBox.Show("No smart card is connected");
+                return;
+            }
+
+            try
+            {
+                var result = _smartCard.GetATRString();
+                if (!result.Success)
+                {
+                    MessageBox.Show($"Unable to detect to the card type. [{result.ErrorCode}] {result.ErrorMessage}");
+                    return;
+                }
+
+                var atr = new ATR(result.Data);
+                MessageBox.Show($"{atr.GetCardType()}\n{atr.ATRString}", "Card Type");
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show($"Unable to detect to the card type: {x.Message}");
             }
         }
 
