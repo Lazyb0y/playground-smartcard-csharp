@@ -42,12 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ATR.cs" />
+    <Compile Include="ATRDatabase.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCard.cs" />
     <Compile Include="SmartCardContext.cs" />
     <Compile Include="SmartCardException.cs" />
     <Compile Include="SmartCardFactory.cs" />
+    <Compile Include="SmartCardIdentifier.cs" />
     <Compile Include="SmartCardMonitor.cs" />
     <Compile Include="SmartCardReader.cs" />
     <Compile Include="SmartCardResult.cs" />

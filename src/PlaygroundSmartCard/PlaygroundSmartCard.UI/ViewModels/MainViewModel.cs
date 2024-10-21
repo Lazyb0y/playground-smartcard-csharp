@@ -16,7 +16,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         private string _selectedReader;
         private SmartCard.Core.SmartCard _smartCard;
         private bool _isCardInserted;
-        private string _cardType;
+        private SmartCardType? _cardType;
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             set => SetProperty(ref _isCardInserted, value);
         }
 
-        public string CardType
+        public SmartCardType? CardType
         {
             get => _cardType;
             set => SetProperty(ref _cardType, value);
@@ -112,8 +112,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
                     return;
                 }
 
-                var atr = new ATR(result.Data);
-                CardType = atr.GetCardType().ToString();
+                CardType = SmartCardIdentifier.Identify(new ATR(result.Data));
             }
             catch (Exception x)
             {

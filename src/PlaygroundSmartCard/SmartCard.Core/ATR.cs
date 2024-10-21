@@ -45,38 +45,21 @@ namespace SmartCard.Core
 
         #endregion
 
+        #region Method(s)
+
         /// <summary>
-        /// Gets the type of the smart card based on the ATR string.
+        /// Normalizes the specified ATR string by removing spaces, dashes, and converting to uppercase.
         /// </summary>
-        /// <returns>The type of the smart card.</returns>
-        public SmartCardType GetCardType()
+        /// <param name="atr">The ATR string to normalize.</param>
+        /// <returns>The normalized ATR string.</returns>
+        public static string Normalize(string atr)
         {
-            var sanitizedATR = String
+            return atr
                 .Replace(" ", string.Empty)
                 .Replace("-", string.Empty)
                 .ToUpper();
-
-            if (sanitizedATR.StartsWith("3B65"))
-            {
-                return SmartCardType.EMV;
-            }
-
-            if (sanitizedATR.StartsWith("3B8F80"))
-            {
-                return SmartCardType.Mifare;
-            }
-
-            if (sanitizedATR.StartsWith("3B3F11008012009131C0640E0146AC72F74105"))
-            {
-                return SmartCardType.Scosta;
-            }
-
-            if (sanitizedATR.StartsWith("3B9F"))
-            {
-                return SmartCardType.SIM;
-            }
-
-            return SmartCardType.Unknown;
         }
+
+        #endregion
     }
 }
