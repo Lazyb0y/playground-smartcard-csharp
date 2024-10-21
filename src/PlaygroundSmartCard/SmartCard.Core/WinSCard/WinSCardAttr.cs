@@ -1,4 +1,4 @@
-﻿namespace SmartCard.Core.Internal
+﻿namespace SmartCard.Core.WinSCard
 {
     /// <summary>
     /// Represents the WinSCard attribute constants.

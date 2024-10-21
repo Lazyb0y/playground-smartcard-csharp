@@ -43,15 +43,6 @@
   <ItemGroup>
     <Compile Include="ATR.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
-    <Compile Include="Internal\WinSCardAPI.cs" />
-    <Compile Include="Internal\WinSCardAttr.cs" />
-    <Compile Include="Internal\WinSCardDisposition.cs" />
-    <Compile Include="Internal\WinSCardError.cs" />
-    <Compile Include="Internal\WinSCardProtocol.cs" />
-    <Compile Include="Internal\WinSCardReaderState.cs" />
-    <Compile Include="Internal\WinSCardScope.cs" />
-    <Compile Include="Internal\WinSCardShare.cs" />
-    <Compile Include="Internal\WinSCardState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCard.cs" />
     <Compile Include="SmartCardContext.cs" />
@@ -63,6 +54,15 @@
     <Compile Include="SmartCardScope.cs" />
     <Compile Include="SmartCardStatus.cs" />
     <Compile Include="SmartCardType.cs" />
+    <Compile Include="WinSCard\WinSCardAPI.cs" />
+    <Compile Include="WinSCard\WinSCardAttr.cs" />
+    <Compile Include="WinSCard\WinSCardDisposition.cs" />
+    <Compile Include="WinSCard\WinSCardError.cs" />
+    <Compile Include="WinSCard\WinSCardProtocol.cs" />
+    <Compile Include="WinSCard\WinSCardReaderState.cs" />
+    <Compile Include="WinSCard\WinSCardScope.cs" />
+    <Compile Include="WinSCard\WinSCardShare.cs" />
+    <Compile Include="WinSCard\WinSCardState.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

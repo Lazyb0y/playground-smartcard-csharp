@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SmartCard.Core.Internal
+namespace SmartCard.Core.WinSCard
 {
     /// <summary>
     /// Represents the state of a smart card reader.

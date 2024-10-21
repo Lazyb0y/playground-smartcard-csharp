@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using SmartCard.Core.EventArgs;
-using SmartCard.Core.Internal;
+using SmartCard.Core.WinSCard;
 
 namespace SmartCard.Core
 {

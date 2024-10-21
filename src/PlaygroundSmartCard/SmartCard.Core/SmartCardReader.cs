@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using SmartCard.Core.Internal;
+using SmartCard.Core.WinSCard;
 
 namespace SmartCard.Core
 {

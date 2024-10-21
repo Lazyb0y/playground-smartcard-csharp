@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SmartCard.Core.Internal
+namespace SmartCard.Core.WinSCard
 {
     /// <summary>
     /// A class that wraps the functionality of winscard.dll and its methods.

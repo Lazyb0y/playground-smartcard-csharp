@@ -1,4 +1,4 @@
-﻿namespace SmartCard.Core.Internal
+﻿namespace SmartCard.Core.WinSCard
 {
     /// <summary>
     /// Represents the actions that can be performed on a smart card.

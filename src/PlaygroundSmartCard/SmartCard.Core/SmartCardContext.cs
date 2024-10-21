@@ -1,5 +1,5 @@
 ﻿using System;
-using SmartCard.Core.Internal;
+using SmartCard.Core.WinSCard;
 
 namespace SmartCard.Core
 {
