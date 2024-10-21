@@ -1,39 +1,46 @@
-﻿namespace SmartCard.Core
+﻿using System;
+
+namespace SmartCard.Core
 {
     /// <summary>
     /// Represents an Answer To Reset (ATR) of a smart card.
     /// </summary>
     public class ATR
     {
-        #region Declaration(s)
-
-        private readonly string _sanitizedATRString;
-
-        #endregion
-
         #region Property(s)
 
         /// <summary>
-        /// Gets the original ATR string.
+        /// Gets the string representation of ATR.
         /// </summary>
-        public string ATRString { get; }
+        public string String
+        {
+            get
+            {
+                if (Bytes == null)
+                {
+                    return null;
+                }
+
+                return BitConverter.ToString(Bytes);
+            }
+        }
+
+        /// <summary>
+        /// Gets the ATR bytes.
+        /// </summary>
+        public byte[] Bytes { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ATR"/> class with the specified ATR string.
+        /// Initializes a new instance of the <see cref="ATR"/> class with the specified ATR bytes.
         /// </summary>
-        /// <param name="atrString">The ATR string.</param>
-        public ATR(string atrString)
+        /// <param name="atrBytes">The ATR bytes.</param>
+        public ATR(byte[] atrBytes)
         {
-            ATRString = atrString;
-
-            _sanitizedATRString = atrString
-                .Replace(" ", string.Empty)
-                .Replace("-", string.Empty)
-                .ToUpper();
+            Bytes = atrBytes;
         }
 
         #endregion
@@ -44,36 +51,32 @@
         /// <returns>The type of the smart card.</returns>
         public SmartCardType GetCardType()
         {
-            if (_sanitizedATRString.StartsWith("3B65"))
+            var sanitizedATR = String
+                .Replace(" ", string.Empty)
+                .Replace("-", string.Empty)
+                .ToUpper();
+
+            if (sanitizedATR.StartsWith("3B65"))
             {
                 return SmartCardType.EMV;
             }
 
-            if (_sanitizedATRString.StartsWith("3B8F80"))
+            if (sanitizedATR.StartsWith("3B8F80"))
             {
                 return SmartCardType.Mifare;
             }
 
-            if (_sanitizedATRString.StartsWith("3B3F11008012009131C0640E0146AC72F74105"))
+            if (sanitizedATR.StartsWith("3B3F11008012009131C0640E0146AC72F74105"))
             {
                 return SmartCardType.Scosta;
             }
 
-            if (_sanitizedATRString.StartsWith("3B9F"))
+            if (sanitizedATR.StartsWith("3B9F"))
             {
                 return SmartCardType.SIM;
             }
 
             return SmartCardType.Unknown;
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current ATR object.
-        /// </summary>
-        /// <returns>A string that represents the current ATR object.</returns>
-        public override string ToString()
-        {
-            return ATRString;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SmartCard.Core.WinSCard;
 
 namespace SmartCard.Core
@@ -112,11 +113,11 @@ namespace SmartCard.Core
         }
 
         /// <summary>
-        /// Gets the Answer to Reset (ATR) string of the smart card.
+        /// Gets the Answer to Reset (ATR) of the smart card.
         /// </summary>
-        /// <returns>A <see cref="SmartCardResult{T}"/> representing the result of getting the ATR string.</returns>
+        /// <returns>A <see cref="SmartCardResult{T}"/> representing the result of getting the ATR.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the smart card is not connected or the reader name is not set.</exception>
-        public SmartCardResult<string> GetATRString()
+        public SmartCardResult<byte[]> GetATR()
         {
             ValidateReaderName();
             ValidateCardHandler();
@@ -139,11 +140,11 @@ namespace SmartCard.Core
 
             if (result != WinSCardError.SCARD_S_SUCCESS)
             {
-                return SmartCardResult<string>.CreateFailure(result);
+                return SmartCardResult<byte[]>.CreateFailure(result);
             }
 
-            var atrString = BitConverter.ToString(atr, 0, atrLen);
-            return SmartCardResult<string>.CreateSuccess(atrString);
+            var atrBytes = atr.Take(atrLen).ToArray();
+            return SmartCardResult<byte[]>.CreateSuccess(atrBytes);
         }
 
         /// <summary>

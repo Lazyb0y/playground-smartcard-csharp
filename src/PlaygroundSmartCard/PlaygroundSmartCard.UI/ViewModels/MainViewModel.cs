@@ -105,7 +105,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         {
             try
             {
-                var result = _smartCard.GetATRString();
+                var result = _smartCard.GetATR();
                 if (!result.Success)
                 {
                     MessageBox.Show($"Unable to get the card info: [{result.ErrorCode}] {result.ErrorMessage}");
