@@ -58,6 +58,22 @@ namespace SmartCard.Core.Internal
         );
 
         /// <summary>
+        /// Retrieves an attribute from the specified smart card.
+        /// </summary>
+        /// <param name="hCard">A handle to the established connection to the card.</param>
+        /// <param name="dwAttrId">The identifier of the attribute to retrieve.</param>
+        /// <param name="pbAttr">A buffer that receives the attribute value.</param>
+        /// <param name="pcbAttrLen">The length of the pbAttr buffer in bytes.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardGetAttrib(
+            IntPtr hCard,
+            uint dwAttrId,
+            [Out] byte[] pbAttr,
+            ref int pcbAttrLen
+        );
+
+        /// <summary>
         /// Retrieves the current status of the specified smart card readers.
         /// </summary>
         /// <param name="hContext">A handle to the established resource manager context.</param>

@@ -44,6 +44,7 @@
     <Compile Include="ATR.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
     <Compile Include="Internal\WinSCardAPI.cs" />
+    <Compile Include="Internal\WinSCardAttr.cs" />
     <Compile Include="Internal\WinSCardDisposition.cs" />
     <Compile Include="Internal\WinSCardError.cs" />
     <Compile Include="Internal\WinSCardProtocol.cs" />
