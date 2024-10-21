@@ -70,7 +70,7 @@ namespace SmartCard.Core.WinSCard
             IntPtr hCard,
             uint dwAttrId,
             [Out] byte[] pbAttr,
-            ref int pcbAttrLen
+            ref uint pcbAttrLen
         );
 
         /// <summary>

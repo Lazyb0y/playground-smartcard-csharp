@@ -147,6 +147,26 @@ namespace SmartCard.Core
         }
 
         /// <summary>
+        /// Gets the attribute of the smart card with the specified attribute ID.
+        /// </summary>
+        /// <param name="attributeId">The ID of the attribute to retrieve.</param>
+        /// <returns>A <see cref="SmartCardResult{T}"/> representing the result of getting the attribute.</returns>
+        public SmartCardResult<byte[]> GetAttribute(uint attributeId)
+        {
+            var attribute = new byte[512];
+            var attributeSize = (uint)attribute.Length;
+
+            var result = WinSCardAPI.SCardGetAttrib(_cardHandle, attributeId, attribute, ref attributeSize);
+            if (result != WinSCardError.SCARD_S_SUCCESS)
+            {
+                return SmartCardResult<byte[]>.CreateFailure(result);
+            }
+
+            Array.Resize(ref attribute, (int)attributeSize);
+            return SmartCardResult<byte[]>.CreateSuccess(attribute);
+        }
+
+        /// <summary>
         /// Disposes the object.
         /// </summary>
         /// <param name="disposing">A boolean value indicating whether to dispose of managed resources.</param>

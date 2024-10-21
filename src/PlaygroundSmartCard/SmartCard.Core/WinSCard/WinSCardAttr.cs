@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the WinSCard attribute constants.
     /// </summary>
-    internal struct WinSCardAttr
+    public struct WinSCardAttr
     {
         // ReSharper disable InconsistentNaming
 
