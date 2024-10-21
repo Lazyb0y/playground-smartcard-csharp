@@ -6,7 +6,7 @@ namespace SmartCard.Core
     /// <summary>
     /// Represents a smart card.
     /// </summary>
-    public class SmartCard
+    public class SmartCard : IDisposable
     {
         #region Declaration(s)
 
