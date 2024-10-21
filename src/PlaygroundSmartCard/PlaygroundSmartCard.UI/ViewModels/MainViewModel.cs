@@ -71,7 +71,6 @@ namespace PlaygroundSmartCard.UI.ViewModels
         public RelayCommand DeselectReaderCommand { get; }
         public RelayCommand ConnectCommand { get; }
         public RelayCommand DisconnectCommand { get; }
-        public RelayCommand GetCardTypeCommand { get; }
 
         #endregion
 
@@ -91,7 +90,6 @@ namespace PlaygroundSmartCard.UI.ViewModels
             DeselectReaderCommand = new RelayCommand(ExecuteDeselectReaderCommand, _ => true);
             ConnectCommand = new RelayCommand(ExecuteConnectCommand, _ => true);
             DisconnectCommand = new RelayCommand(ExecuteDisconnectCommand, _ => true);
-            GetCardTypeCommand = new RelayCommand(ExecuteGetCardTypeCommand, _ => true);
         }
 
         ~MainViewModel()
@@ -252,32 +250,6 @@ namespace PlaygroundSmartCard.UI.ViewModels
             catch (Exception x)
             {
                 MessageBox.Show($"Unable to disconnect to the card: {x.Message}");
-            }
-        }
-
-        private void ExecuteGetCardTypeCommand(object parameter)
-        {
-            if (_smartCard == null)
-            {
-                MessageBox.Show("No smart card is connected");
-                return;
-            }
-
-            try
-            {
-                var result = _smartCard.GetATRString();
-                if (!result.Success)
-                {
-                    MessageBox.Show($"Unable to detect to the card type. [{result.ErrorCode}] {result.ErrorMessage}");
-                    return;
-                }
-
-                var atr = new ATR(result.Data);
-                MessageBox.Show($"{atr.GetCardType()}\n{atr.ATRString}", "Card Type");
-            }
-            catch (Exception x)
-            {
-                MessageBox.Show($"Unable to detect to the card type: {x.Message}");
             }
         }
 
