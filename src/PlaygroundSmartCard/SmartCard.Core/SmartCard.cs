@@ -74,7 +74,7 @@ namespace SmartCard.Core
                 _context.Context,
                 ReaderName,
                 WinSCardShare.SCARD_SHARE_SHARED,
-                WinSCardProtocol.SCARD_PROTOCOL_T0 | WinSCardProtocol.SCARD_PROTOCOL_T0,
+                WinSCardProtocol.SCARD_PROTOCOL_T0 | WinSCardProtocol.SCARD_PROTOCOL_T1,
                 ref cardHandle,
                 ref protocol
             );
