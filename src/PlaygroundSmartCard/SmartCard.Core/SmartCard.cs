@@ -6,7 +6,7 @@ namespace SmartCard.Core
     /// <summary>
     /// Represents a smart card.
     /// </summary>
-    public class SmartCard : ISmartCard
+    public class SmartCard
     {
         #region Declaration(s)
 
@@ -57,74 +57,6 @@ namespace SmartCard.Core
         #endregion
 
         #region Method(s)
-
-        /// <summary>
-        /// Disposes the object.
-        /// </summary>
-        /// <param name="disposing">A boolean value indicating whether to dispose of managed resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    // Free managed resources here
-                }
-
-                try
-                {
-                    if (_cardHandle != IntPtr.Zero)
-                    {
-                        var result = Disconnect();
-                        if (!result.Success)
-                        {
-                            Console.WriteLine(
-                                $"An error occurred during disconnecting the card: [{result.ErrorCode}] {result.ErrorMessage}");
-                        }
-                    }
-                }
-                catch (Exception x)
-                {
-                    Console.WriteLine($"An error occurred during disconnecting the card: {x}");
-                }
-
-                try
-                {
-                    var result = _context.Release();
-                    if (!result.Success)
-                    {
-                        Console.WriteLine(
-                            $"An error occurred during disposal of context: [{result.ErrorCode}] {result.ErrorMessage}");
-                    }
-                }
-                catch (Exception x)
-                {
-                    Console.WriteLine($"An error occurred during disposal: {x}");
-                }
-
-                _disposed = true;
-            }
-        }
-
-        private void ValidateCardHandler()
-        {
-            if (_cardHandle == IntPtr.Zero)
-            {
-                throw new InvalidOperationException("The smart card is not connected.");
-            }
-        }
-
-        private void ValidateReaderName()
-        {
-            if (string.IsNullOrEmpty(ReaderName))
-            {
-                throw new InvalidOperationException("The reader name is not set.");
-            }
-        }
-
-        #endregion
-
-        #region ISmartCard
 
         /// <summary>
         /// Connects to the smart card.
@@ -212,6 +144,70 @@ namespace SmartCard.Core
 
             var atrString = BitConverter.ToString(atr, 0, atrLen);
             return SmartCardResult<string>.CreateSuccess(atrString);
+        }
+
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        /// <param name="disposing">A boolean value indicating whether to dispose of managed resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Free managed resources here
+                }
+
+                try
+                {
+                    if (_cardHandle != IntPtr.Zero)
+                    {
+                        var result = Disconnect();
+                        if (!result.Success)
+                        {
+                            Console.WriteLine(
+                                $"An error occurred during disconnecting the card: [{result.ErrorCode}] {result.ErrorMessage}");
+                        }
+                    }
+                }
+                catch (Exception x)
+                {
+                    Console.WriteLine($"An error occurred during disconnecting the card: {x}");
+                }
+
+                try
+                {
+                    var result = _context.Release();
+                    if (!result.Success)
+                    {
+                        Console.WriteLine(
+                            $"An error occurred during disposal of context: [{result.ErrorCode}] {result.ErrorMessage}");
+                    }
+                }
+                catch (Exception x)
+                {
+                    Console.WriteLine($"An error occurred during disposal: {x}");
+                }
+
+                _disposed = true;
+            }
+        }
+
+        private void ValidateCardHandler()
+        {
+            if (_cardHandle == IntPtr.Zero)
+            {
+                throw new InvalidOperationException("The smart card is not connected.");
+            }
+        }
+
+        private void ValidateReaderName()
+        {
+            if (string.IsNullOrEmpty(ReaderName))
+            {
+                throw new InvalidOperationException("The reader name is not set.");
+            }
         }
 
         #endregion
