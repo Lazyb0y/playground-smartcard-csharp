@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using PlaygroundSmartCard.UI.MVVM;
 using SmartCard.Core;
+using SmartCard.Core.Cards;
 using SmartCard.Core.EventArgs;
 
 namespace PlaygroundSmartCard.UI.ViewModels
@@ -205,7 +206,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
             try
             {
-                var card = new SmartCard.Core.SmartCard(SmartCardScope.User)
+                var card = new ISO7816Card(SmartCardScope.User)
                 {
                     ReaderName = _currentReader
                 };

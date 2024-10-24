@@ -41,8 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APDUCommand.cs" />
+    <Compile Include="APDUResponse.cs" />
     <Compile Include="ATR.cs" />
     <Compile Include="ATRDatabase.cs" />
+    <Compile Include="Cards\ISO7816Card.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCard.cs" />

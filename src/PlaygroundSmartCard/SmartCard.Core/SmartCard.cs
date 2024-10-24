@@ -5,9 +5,13 @@ using SmartCard.Core.WinSCard;
 namespace SmartCard.Core
 {
     /// <summary>
-    /// Represents a smart card.
+    /// Represents an abstract base class for smart card operations.
     /// </summary>
-    public class SmartCard : IDisposable
+    /// <remarks>
+    /// This class provides methods for connecting, disconnecting, and communicating with a smart card.
+    /// It also implements the <see cref="IDisposable"/> interface to ensure proper resource management.
+    /// </remarks>
+    public abstract class SmartCard : IDisposable
     {
         #region Declaration(s)
 
@@ -36,7 +40,7 @@ namespace SmartCard.Core
         /// Initializes a new instance of the <see cref="SmartCard"/> class with the specified <see cref="SmartCardScope"/>.
         /// </summary>
         /// <param name="scope">The scope of the smart card reader.</param>
-        public SmartCard(SmartCardScope scope)
+        protected SmartCard(SmartCardScope scope)
         {
             _context = new SmartCardContext(scope);
 
@@ -168,6 +172,25 @@ namespace SmartCard.Core
         }
 
         /// <summary>
+        /// Sends an APDU command to the smart card.
+        /// </summary>
+        /// <param name="apduCommand">The APDU command to send.</param>
+        /// <returns>An <see cref="APDUResponse"/> representing the response from the smart card.</returns>
+        public APDUResponse Send(APDUCommand apduCommand)
+        {
+            var commandBytes = apduCommand.ToBytes();
+            var responseBytes = Transmit(commandBytes);
+            return new APDUResponse(responseBytes);
+        }
+
+        /// <summary>
+        /// Transmits the specified command bytes to the smart card.
+        /// </summary>
+        /// <param name="commandBytes">The command bytes to transmit.</param>
+        /// <returns>The response bytes from the smart card.</returns>
+        protected abstract byte[] Transmit(byte[] commandBytes);
+
+        /// <summary>
         /// Disposes the object.
         /// </summary>
         /// <param name="disposing">A boolean value indicating whether to dispose of managed resources.</param>
@@ -215,6 +238,10 @@ namespace SmartCard.Core
             }
         }
 
+        /// <summary>
+        /// Validates if the card handler is set.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the smart card is not connected.</exception>
         private void ValidateCardHandler()
         {
             if (_cardHandle == IntPtr.Zero)
@@ -223,6 +250,10 @@ namespace SmartCard.Core
             }
         }
 
+        /// <summary>
+        /// Validates if the reader name is set.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the reader name is not set.</exception>
         private void ValidateReaderName()
         {
             if (string.IsNullOrEmpty(ReaderName))
