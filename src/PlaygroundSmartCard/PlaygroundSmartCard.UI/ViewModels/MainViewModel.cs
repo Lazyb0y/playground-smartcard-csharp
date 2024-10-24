@@ -72,6 +72,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
         public RelayCommand DeselectReaderCommand { get; }
         public RelayCommand ConnectCommand { get; }
         public RelayCommand DisconnectCommand { get; }
+        public RelayCommand IsCardPresentCommand { get; }
 
         #endregion
 
@@ -91,6 +92,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             DeselectReaderCommand = new RelayCommand(ExecuteDeselectReaderCommand, _ => true);
             ConnectCommand = new RelayCommand(ExecuteConnectCommand, _ => true);
             DisconnectCommand = new RelayCommand(ExecuteDisconnectCommand, _ => true);
+            IsCardPresentCommand = new RelayCommand(ExecuteIsCardPresentCommand, _ => true);
         }
 
         ~MainViewModel()
@@ -135,7 +137,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
 
         #region Command Action(s)
 
-        private void ExecuteGetReadersCommand(object parameter)
+        private void ExecuteGetReadersCommand(object obj)
         {
             var result = _cardReader.GetReaderNames();
             if (!result.Success)
@@ -161,7 +163,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             SelectedReader = ReaderList[0];
         }
 
-        private void ExecuteSelectReaderCommand(object parameter)
+        private void ExecuteSelectReaderCommand(object obj)
         {
             if (!string.IsNullOrEmpty(_currentReader))
             {
@@ -185,7 +187,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             CurrentReader = _selectedReader;
         }
 
-        private void ExecuteDeselectReaderCommand(object parameter)
+        private void ExecuteDeselectReaderCommand(object obj)
         {
             if (string.IsNullOrEmpty(_currentReader))
             {
@@ -196,7 +198,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             CurrentReader = null;
         }
 
-        private void ExecuteConnectCommand(object parameter)
+        private void ExecuteConnectCommand(object obj)
         {
             if (_smartCard != null)
             {
@@ -227,7 +229,7 @@ namespace PlaygroundSmartCard.UI.ViewModels
             }
         }
 
-        private void ExecuteDisconnectCommand(object parameter)
+        private void ExecuteDisconnectCommand(object obj)
         {
             if (_smartCard == null)
             {
@@ -250,6 +252,32 @@ namespace PlaygroundSmartCard.UI.ViewModels
             catch (Exception x)
             {
                 MessageBox.Show($"Unable to disconnect to the card: {x.Message}");
+            }
+        }
+
+        private void ExecuteIsCardPresentCommand(object obj)
+        {
+            if (_smartCard == null)
+            {
+                MessageBox.Show("No smart card context is connected");
+                return;
+            }
+
+            try
+            {
+                var result = _smartCard.IsCardPresent();
+                if (!result.Success)
+                {
+                    MessageBox.Show(
+                        $"Unable to check if the card is connected or not. [{result.ErrorCode}] {result.ErrorMessage}");
+                    return;
+                }
+
+                MessageBox.Show($"Card present: {result.Data}");
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show($"Unable to check if the card is connected or not: {x.Message}");
             }
         }
 

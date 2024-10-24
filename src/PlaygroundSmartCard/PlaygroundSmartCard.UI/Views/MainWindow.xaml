@@ -57,6 +57,8 @@
                         IsEnabled="{Binding SmartCard, Converter={StaticResource NullToBoolConverter}}" />
                 <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Margin="4, 0"
                         IsEnabled="{Binding SmartCard, Converter={StaticResource InverseNullToBoolConverter}}" />
+                <Button Content="Is Card Present?" Command="{Binding IsCardPresentCommand}" Margin="4, 0"
+                        IsEnabled="{Binding SmartCard, Converter={StaticResource InverseNullToBoolConverter}}" />
             </StackPanel>
         </GroupBox>
 

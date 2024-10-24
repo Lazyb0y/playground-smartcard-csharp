@@ -172,6 +172,37 @@ namespace SmartCard.Core
         }
 
         /// <summary>
+        /// Checks if a smart card is present in the reader.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="SmartCardResult{T}"/> containing a boolean value indicating whether a smart card is present.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Thrown when the smart card is not connected or the reader name is not set.</exception>
+        public SmartCardResult<bool> IsCardPresent()
+        {
+            ValidateReaderName();
+            ValidateCardHandler();
+
+            WinSCardReaderState[] readerStates =
+            {
+                new WinSCardReaderState
+                {
+                    ReaderName = ReaderName,
+                    CurrentState = WinSCardState.SCARD_STATE_UNAWARE
+                }
+            };
+
+            var result = WinSCardAPI.SCardGetStatusChange(_context.Context, 0, readerStates, (uint)readerStates.Length);
+            if (result != WinSCardError.SCARD_S_SUCCESS)
+            {
+                return SmartCardResult<bool>.CreateFailure(result);
+            }
+
+            var cardPresent = (readerStates[0].EventState & WinSCardState.SCARD_STATE_PRESENT) == WinSCardState.SCARD_STATE_PRESENT;
+            return SmartCardResult<bool>.CreateSuccess(cardPresent);
+        }
+
+        /// <summary>
         /// Sends an APDU command to the smart card.
         /// </summary>
         /// <param name="apduCommand">The APDU command to send.</param>
