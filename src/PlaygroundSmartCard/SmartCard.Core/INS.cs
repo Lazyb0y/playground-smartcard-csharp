@@ -30,6 +30,11 @@
         public const byte READ_BINARY = 0xB0;
 
         /// <summary>
+        /// Instruction byte for getting data.
+        /// </summary>
+        public const byte GET_DATA = 0xCA;
+
+        /// <summary>
         /// Instruction byte for writing binary data.
         /// </summary>
         public const byte WRITE_BINARY = 0xD0;

@@ -307,7 +307,7 @@ namespace SmartCard.Core
         /// <remarks>
         /// This method sends a VERIFY command to the smart card to check the provided PIN.
         /// </remarks>
-        public APDUResponse VerifyPIN(byte[] pin)
+        public virtual APDUResponse VerifyPIN(byte[] pin)
         {
             var verifyCommand = new APDUCommand(
                 CLA.STANDARD,
@@ -324,6 +324,37 @@ namespace SmartCard.Core
         }
 
         /// <summary>
+        /// Gets the remaining PIN attempts.
+        /// </summary>
+        /// <returns>
+        /// The number of remaining PIN attempts, or -1 if the remaining attempts couldn't be retrieved.
+        /// </returns>
+        /// <remarks>
+        /// This method sends a GET DATA command to the smart card to retrieve the number of remaining PIN attempts.
+        /// </remarks>
+        public virtual int GetRemainingPINAttempts()
+        {
+            var command = new APDUCommand(
+                CLA.STANDARD,
+                INS.GET_DATA,
+                0x00,
+                0xC0, // P2 for retrieving remaining PIN attempts
+                null,
+                0x00,
+                MaxAPDUDataSize,
+                ChainingBit
+            );
+
+            var response = Send(command);
+            if (response.SW1 == 0x63 && (response.SW2 & 0x0F) > 0)
+            {
+                return response.SW2 & 0x0F;
+            }
+
+            return -1; // Indicate that remaining attempts couldn't be retrieved
+        }
+
+        /// <summary>
         /// Evaluates the authentication response from the smart card.
         /// </summary>
         /// <param name="response">The APDU response from the smart card.</param>
@@ -337,7 +368,7 @@ namespace SmartCard.Core
         /// was incorrect, <see cref="AuthenticationStatus.PinBlocked"/> if the PIN is blocked, and
         /// <see cref="AuthenticationStatus.Failure"/> for any other failure.
         /// </remarks>
-        public AuthenticationStatus EvaluatePINAuthenticationResponse(APDUResponse response)
+        public virtual AuthenticationStatus EvaluatePINAuthenticationResponse(APDUResponse response)
         {
             if (response.IsSuccess)
             {
