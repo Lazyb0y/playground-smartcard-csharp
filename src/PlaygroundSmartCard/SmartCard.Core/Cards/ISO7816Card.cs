@@ -23,6 +23,16 @@ namespace SmartCard.Core.Cards
         #region SmartCard
 
         /// <summary>
+        /// Gets the maximum size of the APDU data.
+        /// </summary>
+        public override int MaxAPDUDataSize => 255;
+
+        /// <summary>
+        /// Gets the chaining bit used in APDU commands.
+        /// </summary>
+        public override byte ChainingBit => 0x10;
+
+        /// <summary>
         /// Transmits a command to the smart card and returns the response.
         /// </summary>
         /// <param name="commandBytes">The command bytes to be transmitted.</param>

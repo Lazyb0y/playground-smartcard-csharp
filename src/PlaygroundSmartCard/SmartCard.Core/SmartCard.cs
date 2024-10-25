@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SmartCard.Core.WinSCard;
 
@@ -31,6 +32,27 @@ namespace SmartCard.Core
         /// This property is mandatory to set before performing any operation.
         /// </remarks>
         public string ReaderName { get; set; }
+
+        #endregion
+
+        #region Abstruction
+
+        /// <summary>
+        /// Gets the maximum size of the APDU data.
+        /// </summary>
+        public abstract int MaxAPDUDataSize { get; }
+
+        /// <summary>
+        /// Gets the chaining bit for APDU commands.
+        /// </summary>
+        public abstract byte ChainingBit { get; }
+
+        /// <summary>
+        /// Transmits the specified command bytes to the smart card.
+        /// </summary>
+        /// <param name="commandBytes">The command bytes to transmit.</param>
+        /// <returns>The response bytes from the smart card.</returns>
+        protected abstract byte[] Transmit(byte[] commandBytes);
 
         #endregion
 
@@ -209,17 +231,73 @@ namespace SmartCard.Core
         /// <returns>An <see cref="APDUResponse"/> representing the response from the smart card.</returns>
         public APDUResponse Send(APDUCommand apduCommand)
         {
-            var commandBytes = apduCommand.ToBytes();
-            var responseBytes = Transmit(commandBytes);
-            return new APDUResponse(responseBytes);
+            if (apduCommand.NeedsChaining)
+            {
+                return SendChained(apduCommand);
+            }
+
+            var responseBytes = Transmit(apduCommand.ToBytes());
+            return HandleResponseChaining(new APDUResponse(responseBytes, MaxAPDUDataSize));
         }
 
         /// <summary>
-        /// Transmits the specified command bytes to the smart card.
+        /// Sends a chained APDU command to the smart card.
         /// </summary>
-        /// <param name="commandBytes">The command bytes to transmit.</param>
-        /// <returns>The response bytes from the smart card.</returns>
-        protected abstract byte[] Transmit(byte[] commandBytes);
+        /// <param name="apduCommand">The APDU command to send.</param>
+        /// <returns>The response from the smart card.</returns>
+        private APDUResponse SendChained(APDUCommand apduCommand)
+        {
+            APDUResponse lastResponse = null;
+
+            foreach (var command in apduCommand.GetChainedCommands())
+            {
+                var responseBytes = Transmit(command.ToBytes());
+                var response = new APDUResponse(responseBytes, MaxAPDUDataSize);
+
+                // Note: This code will only consider the very last response for return. This is intentional.
+                lastResponse = HandleResponseChaining(response);
+            }
+
+            return lastResponse;
+        }
+
+        /// <summary>
+        /// Handles the response chaining for APDU commands.
+        /// </summary>
+        /// <param name="initialResponse">The initial response from the smart card.</param>
+        /// <returns>The complete response from the smart card.</returns>
+        private APDUResponse HandleResponseChaining(APDUResponse initialResponse)
+        {
+            if (!initialResponse.IsMoreDataAvailable)
+            {
+                return initialResponse;
+            }
+
+            var completeData = new List<byte>(initialResponse.Data);
+
+            while (initialResponse.IsMoreDataAvailable)
+            {
+                var getResponseCommand = new APDUCommand(
+                    0x00,
+                    0xC0,
+                    0x00,
+                    0x00,
+                    null,
+                    (byte)MaxAPDUDataSize,
+                    MaxAPDUDataSize,
+                    ChainingBit);
+
+                var responseBytes = Transmit(getResponseCommand.ToBytes());
+                initialResponse = new APDUResponse(responseBytes, initialResponse.MaxAPDUDataSize);
+                completeData.AddRange(initialResponse.Data);
+            }
+
+            return new APDUResponse(
+                completeData.ToArray(),
+                initialResponse.SW1,
+                initialResponse.SW2,
+                initialResponse.MaxAPDUDataSize);
+        }
 
         /// <summary>
         /// Disposes the object.
