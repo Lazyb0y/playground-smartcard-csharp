@@ -300,6 +300,64 @@ namespace SmartCard.Core
         }
 
         /// <summary>
+        /// Verifies the PIN with the smart card.
+        /// </summary>
+        /// <param name="pin">The PIN to verify.</param>
+        /// <returns>An <see cref="APDUResponse"/> representing the response from the smart card.</returns>
+        /// <remarks>
+        /// This method sends a VERIFY command to the smart card to check the provided PIN.
+        /// </remarks>
+        public APDUResponse VerifyPIN(byte[] pin)
+        {
+            var verifyCommand = new APDUCommand(
+                CLA.STANDARD,
+                INS.VERIFY_PIN,
+                0x00, // P1 is usually 0x00 for VERIFY
+                0x80, // Reference control for the PIN (commonly 0x80)
+                pin,
+                0x00,
+                MaxAPDUDataSize,
+                ChainingBit
+            );
+
+            return Send(verifyCommand);
+        }
+
+        /// <summary>
+        /// Evaluates the authentication response from the smart card.
+        /// </summary>
+        /// <param name="response">The APDU response from the smart card.</param>
+        /// <returns>
+        /// An <see cref="AuthenticationStatus"/> value indicating the result of the authentication.
+        /// </returns>
+        /// <remarks>
+        /// This method interprets the status words (SW1 and SW2) in the APDU response to determine
+        /// the authentication status. It returns <see cref="AuthenticationStatus.Success"/> if the
+        /// authentication was successful, <see cref="AuthenticationStatus.IncorrectPin"/> if the PIN
+        /// was incorrect, <see cref="AuthenticationStatus.PinBlocked"/> if the PIN is blocked, and
+        /// <see cref="AuthenticationStatus.Failure"/> for any other failure.
+        /// </remarks>
+        public AuthenticationStatus EvaluatePINAuthenticationResponse(APDUResponse response)
+        {
+            if (response.IsSuccess)
+            {
+                return AuthenticationStatus.Success;
+            }
+
+            if (response.SW1 == 0x63 && (response.SW2 & 0x0F) > 0)
+            {
+                return AuthenticationStatus.IncorrectPin;
+            }
+
+            if (response.SW1 == 0x69 && response.SW2 == 0x83)
+            {
+                return AuthenticationStatus.PinBlocked;
+            }
+
+            return AuthenticationStatus.Failure;
+        }
+
+        /// <summary>
         /// Disposes the object.
         /// </summary>
         /// <param name="disposing">A boolean value indicating whether to dispose of managed resources.</param>

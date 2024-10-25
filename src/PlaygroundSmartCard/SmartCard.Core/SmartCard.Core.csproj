@@ -45,8 +45,11 @@
     <Compile Include="APDUResponse.cs" />
     <Compile Include="ATR.cs" />
     <Compile Include="ATRDatabase.cs" />
+    <Compile Include="AuthenticationStatus.cs" />
     <Compile Include="Cards\ISO7816Card.cs" />
+    <Compile Include="CLA.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
+    <Compile Include="INS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCard.cs" />
     <Compile Include="SmartCardContext.cs" />

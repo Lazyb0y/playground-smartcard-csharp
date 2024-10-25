@@ -91,6 +91,10 @@ namespace SmartCard.Core
             {
                 Lc = (byte)data.Length;
             }
+            else
+            {
+                Lc = 0;
+            }
         }
 
         #endregion
@@ -99,6 +103,7 @@ namespace SmartCard.Core
 
         /// <summary>
         /// Gets the chained APDU commands if the data exceeds the maximum APDU data size.
+        /// Each chained command sets the CLA chaining bit (defined by the card) until the final command.
         /// </summary>
         /// <returns>An enumerable of chained APDU commands.</returns>
         public IEnumerable<APDUCommand> GetChainedCommands()
@@ -111,6 +116,7 @@ namespace SmartCard.Core
                 Array.Copy(Data, offset, chunk, 0, length);
                 offset += length;
 
+                // Set chaining bit for intermediate commands
                 var cla = offset < Data.Length ? (byte)(CLA | ChainingBit) : CLA;
 
                 // Set Le only for the last command in the chain
