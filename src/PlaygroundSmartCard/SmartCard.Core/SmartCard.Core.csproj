@@ -50,6 +50,9 @@
     <Compile Include="CLA.cs" />
     <Compile Include="EventArgs\CardStatusChangedEventArgs.cs" />
     <Compile Include="INS.cs" />
+    <Compile Include="Logging\ILogListener.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCard.cs" />
     <Compile Include="SmartCardContext.cs" />
