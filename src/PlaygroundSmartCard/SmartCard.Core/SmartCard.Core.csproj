@@ -69,6 +69,7 @@
     <Compile Include="WinSCard\WinSCardAttr.cs" />
     <Compile Include="WinSCard\WinSCardDisposition.cs" />
     <Compile Include="WinSCard\WinSCardError.cs" />
+    <Compile Include="WinSCard\WinSCardIORequest.cs" />
     <Compile Include="WinSCard\WinSCardProtocol.cs" />
     <Compile Include="WinSCard\WinSCardReaderState.cs" />
     <Compile Include="WinSCard\WinSCardScope.cs" />

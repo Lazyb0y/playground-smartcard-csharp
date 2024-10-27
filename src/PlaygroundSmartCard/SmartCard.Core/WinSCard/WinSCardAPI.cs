@@ -136,5 +136,27 @@ namespace SmartCard.Core.WinSCard
             byte[] pbAtr,
             ref int pcbAtrLen
         );
+
+        /// <summary>
+        /// Sends a command to the smart card and receives the response.
+        /// </summary>
+        /// <param name="hCard">A handle to the established connection to the card.</param>
+        /// <param name="pioSendPci">A pointer to the protocol control information structure for the instruction.</param>
+        /// <param name="pbSendBuffer">A buffer that contains the command to send to the card.</param>
+        /// <param name="cbSendLength">The length, in bytes, of the pbSendBuffer buffer.</param>
+        /// <param name="pioRecvPci">A pointer to the protocol control information structure for the response.</param>
+        /// <param name="pbRecvBuffer">A buffer that receives the response from the card.</param>
+        /// <param name="pcbRecvLength">The length, in bytes, of the pbRecvBuffer buffer. On input, this value specifies the size of the pbRecvBuffer buffer. On output, this value specifies the number of bytes received from the card.</param>
+        /// <returns>Returns zero on success; otherwise, returns a nonzero error code defined in WinError.h.</returns>
+        [DllImport("winscard.dll", SetLastError = true)]
+        internal static extern int SCardTransmit(
+            IntPtr hCard,
+            ref WinSCardIORequest pioSendPci,
+            byte[] pbSendBuffer,
+            int cbSendLength,
+            IntPtr pioRecvPci,
+            byte[] pbRecvBuffer,
+            ref int pcbRecvLength
+        );
     }
 }

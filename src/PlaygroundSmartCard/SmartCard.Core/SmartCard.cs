@@ -33,6 +33,22 @@ namespace SmartCard.Core
         /// </remarks>
         public string ReaderName { get; set; }
 
+        /// <summary>
+        /// Gets the handle of the connected smart card.
+        /// </summary>
+        /// <remarks>
+        /// This property returns the handle of the smart card that was obtained during the connection.
+        /// </remarks>
+        public IntPtr CardHandle => _cardHandle;
+
+        /// <summary>
+        /// Gets the protocol used for communication with the smart card.
+        /// </summary>
+        /// <remarks>
+        /// This property returns the protocol that was negotiated during the connection to the smart card.
+        /// </remarks>
+        public int Protocol => _protocol;
+
         #endregion
 
         #region Abstruction
